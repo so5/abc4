@@ -1,5 +1,5 @@
-# ABCCCC
-ABCCCC means ABstruct Cloud hpC Cluster Controller.
+# ABC4 (ABCCCC)
+ABC4 means ABstruCt Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
 
 ## HPC cluster which will be created
@@ -27,7 +27,7 @@ you can create, suspend, resume, change number of nodes, and destroy HPC cluster
 ```
 
 ## important notice
-ABCCCC is alpha status. almost all functions are not implemented yet.
+ABC4 is alpha status. almost all functions are not implemented yet.
 
 ## supported providers
 - aws (planned)
