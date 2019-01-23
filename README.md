@@ -7,7 +7,7 @@ you can create, suspend, resume, change number of nodes, and destroy HPC cluster
 - any number of child nodes in private network
 - ansible is installed on head node 
 - host-based authentication is enabled between head node and child nodes
-- head node's strage is shared by all nodes by NFSv4
+- head node's local sotrage is shared by all nodes by NFSv4
 
 ```
             +------ private network --------+
