@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "ABstruct Cloud hpC Cluster Controller",
   "main": "lib/index.js",
-  "bin": "bin/main.js",
+  "bin": {
+    "abc4": "bin/main.js"
+  },
   "scripts": {
     "coverage": "nyc --reporter=html --reporter=text npm run test",
-    "lint": "eslint --fix */*.js",
+    "lint": "eslint --fix lib test bin",
     "test": "mocha --recursive test"
   },
   "devDependencies": {
@@ -45,7 +47,7 @@
   "homepage": "https://github.com/so5/abc4#readme",
   "dependencies": {
     "ajv": "^6.6.2",
-    "aws-sdk": "^2.377.0",
+    "aws-sdk": "^2.393.0",
     "debug": "^4.1.0",
     "docopt": "^0.6.2",
     "uuid": "^3.3.2"

@@ -1,26 +1,26 @@
-// setup test framework
+"use strict";
+//setup test framework
 const chai = require("chai");
 const expect = chai.expect;
 const sinon = require("sinon");
 chai.use(require("sinon-chai"));
 
 //helper functions
-const uuidv1 = require("uuid/v1");
+const { reID } = require("../lib/utils");
 
-// testee and test data
-const {create, destroy, increase, decrease, suspend, resume} = require("../lib/index.js");
-const testOrder={
-  provider: "aws",
+//testee and test data
+const { create, destroy, increase, decrease, suspend, resume } = require("../lib/index.js");
+const testOrder = {
+  provider: "test",
   n: 2
-}
-
+};
 
 describe("# test for library interface routines", ()=>{
   describe("#create", ()=>{
-    it("should return uuid if called with right order", async ()=>{
-      expect(await create(testOrder)).to.be.string;
+    it("should return uuid if called with right order", async()=>{
+      expect(await create(testOrder)).to.match(reID);
     });
-    it("should return null if called with illegal argument", async ()=>{
+    it("should return null if called with illegal argument", async()=>{
       expect(await create("hoge")).to.be.null;
       expect(await create(null)).to.be.null;
       expect(await create(1)).to.be.null;
@@ -33,19 +33,13 @@ describe("# test for library interface routines", ()=>{
     beforeEach(async()=>{
       testClusterID = await create(testOrder);
     });
-    afterEach(async ()=>{
+    afterEach(async()=>{
       await destroy(testClusterID);
     });
-    it("should return true if called with valid cluster id", async ()=>{
+    it("should return true if called with valid cluster id", async()=>{
       expect(await destroy(testClusterID)).to.be.true;
     });
-    it("should return false if called with already destied id", async ()=>{
-      expect(await destroy(testClusterID)).to.be.false;
-    });
-    it("should return false if called with invalid cluster id", async ()=>{
-      expect(await destroy(testClusterID.slice(-4)+"hoge")).to.be.false;
-    });
-    it("should return null if called with illegal argument", async ()=>{
+    it("should return null if called with invalid cluster id", async()=>{
       expect(await destroy("hoge")).to.be.null;
       expect(await destroy(null)).to.be.null;
       expect(await destroy(1)).to.be.null;
@@ -62,4 +56,3 @@ describe("# test for library interface routines", ()=>{
   describe.skip("#resume", ()=>{
   });
 });
-
