@@ -4,15 +4,16 @@ const chai = require("chai");
 const expect = chai.expect;
 const sinon = require("sinon");
 chai.use(require("sinon-chai"));
+chai.use(require("chai-as-promised"));
 
 //helper function
 
 //testee and test data
-const { getImageId, awsCreate, awsDestroy } = require("../lib/internal/aws.js");
+const { getImageId, awsCreate, awsDestroy, awsListInstances } = require("../lib/providers/aws");
 
-describe.only("test for aws functions", function() {
-  this.timeout(0);
-  describe("#getAMPI_ID", async()=>{
+describe("test for aws functions", function() {
+  this.timeout(0);//eslint-disable-line no-invalid-this
+  describe("#getImageId", async()=>{
     const stub = sinon.stub();
     [
       { os: "centos7", ImageID: "ami-8e8847f1" },
@@ -34,19 +35,35 @@ describe.only("test for aws functions", function() {
       "CentOS7",
       "centos",
       "centos5",
-      undefined,
+      undefined, //eslint-disable-line no-undefined
       null,
       42,
       {},
       stub
     ].forEach((os)=>{
       it("should return null for invaild os keyword", async()=>{
-        expect(await getImageId(os, "ap-northeast-1")).to.be.null;
+        expect(getImageId(os, "ap-northeast-1")).to.be.rejected;
         expect(stub).not.to.be.called;
       });
     });
     it("should return null if region is not specified", async()=>{
-      expect(await getImageId("centos7")).to.be.null;
+      expect(getImageId("centos7")).to.be.rejected;
+    });
+  });
+  describe("#create-list-destroy", async()=>{
+    it("should create, list, and destroy", async()=>{
+      const order = {
+        provider: "aws",
+        numNodes: 3,
+        InstanceType: "t2.micro",
+        os: "centos7",
+        region: "ap-northeast-1"
+      };
+      const cluster = await awsCreate(order);
+      expect(cluster.privateNetwork).to.have.lengthOf(order.numNodes);
+      await awsDestroy(cluster.id);
+      const instancesAfter = await awsListInstances(cluster.id);
+      expect(instancesAfter.length).to.equal(0);
     });
   });
 });

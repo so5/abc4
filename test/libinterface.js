@@ -34,10 +34,10 @@ describe("# test for library interface routines", ()=>{
       testClusterID = await create(testOrder);
     });
     afterEach(async()=>{
-      await destroy(testClusterID);
+      await destroy(testClusterID.id);
     });
     it("should return true if called with valid cluster id", async()=>{
-      expect(await destroy(testClusterID)).to.be.true;
+      expect(await destroy(testClusterID.id)).to.be.true;
     });
     it("should return null if called with invalid cluster id", async()=>{
       expect(await destroy("hoge")).to.be.null;

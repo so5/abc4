@@ -2,6 +2,23 @@
 ABC4 means ABstruCt Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
 
+# How to use
+creat cluster
+```
+create({
+  provider: "aws",
+  os: "centos7 | centos6 | ubuntu18 | ubuntu16",
+  id: "your accesskey",
+  pw: "your secret access key",
+  region: "preferd region",
+  numNodes: "more than or equal 1",
+  headOnlyParam:{
+    parameters only for head node
+  }
+})
+```
+you can also pass any other parameters for each providers instanciate function(e.g. runInstances for aws) 
+
 ## HPC cluster which will be created
 - only one head node which can be accessed from internet
 - any number of child nodes in private network
@@ -30,15 +47,17 @@ you can create, suspend, resume, change number of nodes, and destroy HPC cluster
 ABC4 is alpha status. almost all functions are not implemented yet.
 
 ## supported providers
-- aws (planned)
+- aws
 - azure (planned)
 - GCE (planned)
 
 ## supported OS
-- CentOS 7 (planned)
-- CentOS 6 (planned)
-- Ubuntu 18.04 LTS - Bionic (planned)
-- Ubuntu 16.04 LTS - Xenial (planned)
+- CentOS 7
+- CentOS 6
+- Ubuntu 18.04 LTS - Bionic
+- Ubuntu 16.04 LTS - Xenial
+- RedHat Enterprise Linux 7 (planned)
+- RedHat Enterprise Linux 6 (planned)
 
 
 ## Functions
