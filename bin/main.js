@@ -50,9 +50,10 @@ async function main() {
     rt.headNodes.forEach((e)=>{
       console.log(`  ssh ${rt.loginUser}@${e.publicNetwork.IP}`);
     });
+    console.log("");
     console.log("cluster id:");
     console.log(`  ${rt.id}`);
-
+    console.log("");
     console.log("network configuration:");
     console.log("head node:");
     console.log("  public network:");
