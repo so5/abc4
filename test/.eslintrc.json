@@ -10,7 +10,8 @@
         "chai",
         "sinon",
         "sinon-chai",
-        "chai-as-promised"
+        "chai-as-promised",
+        "rewire"
       ]
     }
   },

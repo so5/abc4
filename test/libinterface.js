@@ -6,7 +6,8 @@ const sinon = require("sinon");
 chai.use(require("sinon-chai"));
 
 //helper functions
-const { reID } = require("../lib/utils");
+const rewire = require("rewire");
+const { reID } = rewire("../lib/index.js").__get__("reID"); //eslint-disable-line no-underscore-dangle
 
 //testee and test data
 const { create, destroy, increase, decrease, suspend, resume } = require("../lib/index.js");
