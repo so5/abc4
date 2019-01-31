@@ -11,7 +11,7 @@ chai.use(require("chai-as-promised"));
 //testee and test data
 const { getImageId, awsCreate, awsDestroy, awsListInstances } = require("../lib/providers/aws");
 
-describe("test for aws functions", function() {
+describe.skip("test for aws functions", function() {
   this.timeout(0);//eslint-disable-line no-invalid-this
   describe("#getImageId", async()=>{
     const stub = sinon.stub();

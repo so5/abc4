@@ -5,9 +5,25 @@ const expect = chai.expect;
 const sinon = require("sinon");
 chai.use(require("sinon-chai"));
 
-//helper functions
+//stubs
+const stubs = {
+  create: sinon.stub(),
+  destroy: sinon.stub(),
+  list: sinon.stub(),
+  increase: sinon.stub(),
+  decrease: sinon.stub(),
+  suspend: sinon.stub(),
+  resume: sinon.stub()
+};
+
 const rewire = require("rewire");
-const { reID } = rewire("../lib/index.js").__get__("reID"); //eslint-disable-line no-underscore-dangle
+const index = rewire("../lib/index.js");
+index.__set__("getMethod", (provider, cmd)=>{
+  return stubs(cmd);
+});
+
+//helper functions
+const { reID } = index.__get__("reID"); //eslint-disable-line no-underscore-dangle
 
 //testee and test data
 const { create, destroy, increase, decrease, suspend, resume } = require("../lib/index.js");
@@ -16,7 +32,7 @@ const testOrder = {
   n: 2
 };
 
-describe("# test for library interface routines", ()=>{
+describe("test for library interface routines", ()=>{
   describe("#create", ()=>{
     it("should return uuid if called with right order", async()=>{
       expect(await create(testOrder)).to.match(reID);

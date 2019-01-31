@@ -3,7 +3,9 @@ ABC4 means ABstruCt Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
 
 # How to use
+*NEED TO BE UPDATED !!*
 creat cluster
+
 ```
 create({
   provider: "aws",
@@ -17,6 +19,7 @@ create({
   }
 })
 ```
+
 you can also pass any other parameters for each providers instanciate function(e.g. runInstances for aws) 
 
 ## HPC cluster which will be created

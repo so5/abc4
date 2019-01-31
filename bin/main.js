@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 "use strct";
-Error.stackTraceLimit=0;
+/*eslint no-console: 0 */
+Error.stackTraceLimit = 0;
 
 const fs = require("fs");
 const path = require("path");
@@ -50,7 +51,7 @@ async function main() {
       console.log(`  ssh ${rt.loginUser}@${e.publicNetwork.IP}`);
     });
     console.log("cluster id:");
-    console.log(`  ${rt.id}`)
+    console.log(`  ${rt.id}`);
 
     console.log("network configuration:");
     console.log("head node:");
@@ -67,7 +68,6 @@ async function main() {
     rt.childNodes.forEach((e)=>{
       console.log(`    - ${e.privateNetwork.hostname} ( ${e.privateNetwork.IP} )`);
     });
-
   } else if (options.destroy) {
     await lib.destroy(options["<id_string>"]);
   } else if (options.list) {
