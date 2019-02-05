@@ -18,6 +18,7 @@ const stubs = {
 
 const rewire = require("rewire");
 const index = rewire("../lib/index.js");
+//eslint-disable-next no-underscore-dangle
 index.__set__("getMethod", (provider, cmd)=>{
   return stubs(cmd);
 });

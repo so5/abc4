@@ -2,32 +2,13 @@
 ABC4 means ABstruCt Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
 
-# How to use
-*NEED TO BE UPDATED !!*
-creat cluster
-
-```
-create({
-  provider: "aws",
-  os: "centos7 | centos6 | ubuntu18 | ubuntu16",
-  id: "your accesskey",
-  pw: "your secret access key",
-  region: "preferd region",
-  numNodes: "more than or equal 1",
-  headOnlyParam:{
-    parameters only for head node
-  }
-})
-```
-
-you can also pass any other parameters for each providers instanciate function(e.g. runInstances for aws) 
 
 ## HPC cluster which will be created
-- only one head node which can be accessed from internet
+- one head node which can be accessed from internet
 - any number of child nodes in private network
-- ansible is installed on head node 
-- host-based authentication is enabled between head node and child nodes
-- head node's local sotrage is shared by all nodes by NFSv4
+- host-based authentication is enabled between each node in private network
+- ansible is installed to head node. you can customize the cluster with it
+- head node's local sotrage is shared by all nodes via NFSv4
 
 ```
             +------ private network --------+
@@ -46,8 +27,25 @@ you can also pass any other parameters for each providers instanciate function(e
             +-------------------------------+
 ```
 
-## important notice
-ABC4 is alpha status. almost all functions are not implemented yet.
+## How to use
+### creat cluster
+
+```
+const {create} = require(abc4);
+const order = {provider: "aws", region: "ap-northeast-1"};
+const cluster = await create(order);
+```
+
+order is the option argument object. you can set any cluster setting (including provider specific one) with this one.
+cluster is the object which has all information about the cluster you just creat (see also Cluster section)
+
+### destroy cluster
+```
+const {destroy} = require(abc4);
+await destroy (cluster.id);
+```
+
+cluster.id is returned string from create()
 
 ## supported providers
 - aws
@@ -56,110 +54,16 @@ ABC4 is alpha status. almost all functions are not implemented yet.
 
 ## supported OS
 - CentOS 7
-- CentOS 6
-- Ubuntu 18.04 LTS - Bionic
+- CentOS 6 (planned)
+- Ubuntu 18.04 LTS - Bionic (planned)
 - Ubuntu 16.04 LTS - Xenial
 - RedHat Enterprise Linux 7 (planned)
 - RedHat Enterprise Linux 6 (planned)
 
 
-## Functions
+## API
+please see separete doc
 
-<dl>
-<dt><a href="#create">create(order)</a> ⇒ <code>string</code></dt>
-<dd><p>create HPC cluster on cloud</p>
-</dd>
-<dt><a href="#destroy">destroy(id)</a> ⇒ <code>boolean</code></dt>
-<dd><p>destroy cluster which was created by create()</p>
-</dd>
-<dt><a href="#increase">increase(id, n)</a> ⇒ <code>boolean</code></dt>
-<dd><p>increase child node in the cluster</p>
-</dd>
-<dt><a href="#decrease">decrease(id, n)</a> ⇒ <code>boolean</code></dt>
-<dd><p>decrease child node in the cluster</p>
-</dd>
-<dt><a href="#suspend">suspend(id)</a> ⇒ <code>boolean</code></dt>
-<dd><p>suspend all nodes in the cluster</p>
-</dd>
-<dt><a href="#resume">resume(id)</a> ⇒ <code>boolean</code></dt>
-<dd><p>resume all nodes in the cluster</p>
-</dd>
-</dl>
 
-<a name="create"></a>
-
-## create(order) ⇒ <code>string</code>
-create HPC cluster on cloud
-
-**Kind**: global function  
-**Returns**: <code>string</code> - id  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| order | <code>order</code> | order object for the cluster to build |
-
-<a name="destroy"></a>
-
-## destroy(id) ⇒ <code>boolean</code>
-destroy cluster which was created by create()
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - true if all instance is successfully destried  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| id | <code>string</code> | id string which was returned from create() |
-
-<a name="increase"></a>
-
-## increase(id, n) ⇒ <code>boolean</code>
-increase child node in the cluster
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - true if child node is successfully increased  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| id | <code>string</code> |  | id string which was returned from create() |
-| n | <code>number</code> | <code>1</code> | how many nodes to be add |
-
-<a name="decrease"></a>
-
-## decrease(id, n) ⇒ <code>boolean</code>
-decrease child node in the cluster
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - true if child node is successfully decreased
-
-please note that if n is larger than number of existing child nodes,
-head node is still working after decrease()  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| id | <code>string</code> |  | id string which was returned from create() |
-| n | <code>number</code> | <code>1</code> | how many nodes to be decreased |
-
-<a name="suspend"></a>
-
-## suspend(id) ⇒ <code>boolean</code>
-suspend all nodes in the cluster
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - true if all instance is successfully suspended  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| id | <code>string</code> | id string which was returned from create() |
-
-<a name="resume"></a>
-
-## resume(id) ⇒ <code>boolean</code>
-resume all nodes in the cluster
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - true if all instance is successfully resumed  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| id | <code>string</code> | id string which was returned from create() |
-
+## license
+MIT
