@@ -18,7 +18,7 @@ order is JSON filename or JSON string
 `;
 
 
-/**
+/*
  * main function
  */
 async function main() {
@@ -50,25 +50,25 @@ async function main() {
     rt.headNodes.forEach((e)=>{
       console.log(`  ssh ${rt.loginUser}@${e.publicNetwork.IP}`);
     });
-    console.log("");
-    console.log("cluster id:");
-    console.log(`  ${rt.id}`);
-    console.log("");
-    console.log("network configuration:");
+    console.log("\nhow to destroy this cluster");
+    console.log(`  npm start destroy ${rt.id}`);
+    console.log("\nnetwork configuration:");
     console.log("head node:");
     console.log("  public network:");
     rt.headNodes.forEach((e)=>{
-      console.log(`    - ${e.publicNetwork.hostname} ( ${e.publicNetwork.IP} )`);
+      console.log(`    - ${e.publicNetwork.hostname} ${e.publicNetwork.IP}`);
     });
     console.log("  private network:");
     rt.headNodes.forEach((e)=>{
-      console.log(`    - ${e.privateNetwork.hostname} ( ${e.privateNetwork.IP} )`);
+      console.log(`    - ${e.privateNetwork.hostname} ${e.privateNetwork.IP}`);
     });
     console.log("child node:");
     console.log("  private network:");
     rt.childNodes.forEach((e)=>{
-      console.log(`    - ${e.privateNetwork.hostname} ( ${e.privateNetwork.IP} )`);
+      console.log(`    - ${e.privateNetwork.hostname} ${e.privateNetwork.IP}`);
     });
+    console.log("\ncluster id:");
+    console.log(`  ${rt.id}`);
   } else if (options.destroy) {
     await lib.destroy(options["<id_string>"]);
   } else if (options.list) {
