@@ -24,7 +24,7 @@ index.__set__("getMethod", (provider, cmd)=>{
 });
 
 //helper functions
-const { reID } = index.__get__("reID"); //eslint-disable-line no-underscore-dangle
+const { reID } = require("../lib/validation/index.js");
 
 //testee and test data
 const { create, destroy, increase, decrease, suspend, resume } = require("../lib/index.js");

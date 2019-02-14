@@ -11,6 +11,8 @@
         "sinon",
         "sinon-chai",
         "chai-as-promised",
+        "chai-json-schema-ajv",
+        "arssh2-client",
         "rewire"
       ]
     }

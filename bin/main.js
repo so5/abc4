@@ -43,15 +43,16 @@ async function main() {
       console.log("invalid order");
       return;
     }
+    order.debug = console.log.bind(console);
     const rt = await lib.create(order);
 
     console.log("create cluster done:");
     console.log("how to login to head node");
     rt.headNodes.forEach((e)=>{
-      console.log(`  ssh ${rt.loginUser}@${e.publicNetwork.IP}`);
+      console.log(`  ssh ${rt.user}@${e.publicNetwork.IP}`);
     });
     console.log("\nhow to destroy this cluster");
-    console.log(`  npm start destroy ${rt.id}`);
+    console.log(`  npm start destroy ${rt.clusterID}`);
     console.log("\nnetwork configuration:");
     console.log("head node:");
     console.log("  public network:");
@@ -68,12 +69,18 @@ async function main() {
       console.log(`    - ${e.privateNetwork.hostname} ${e.privateNetwork.IP}`);
     });
     console.log("\ncluster id:");
-    console.log(`  ${rt.id}`);
+    console.log(`  ${rt.clusterID}`);
   } else if (options.destroy) {
-    await lib.destroy(options["<id_string>"]);
+    await lib.destroy({
+      clusterID: options["<id_string>"],
+      debug: console.log.bind(console)
+    });
   } else if (options.list) {
-    const id = options["<id_string>"] || null;
-    await lib.list(id !== "all" ? id : null);
+    const opt = {
+      clusterID: options["<id_string>"] || null,
+      debug: console.log.bind(console)
+    };
+    await lib.list(opt);
   }
 }
 
