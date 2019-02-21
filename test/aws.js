@@ -7,12 +7,16 @@ chai.use(require("sinon-chai"));
 chai.use(require("chai-as-promised"));
 chai.use(require("chai-json-schema-ajv"));
 
-//helper function
-const fs = require("fs-extra");
-const ARsshClient = require("arssh2-client");
+//testee
+//this test is only for aws provider but use library's public interface to use default values of order
+const { create, destroy, list } = require("../lib");
+const { getImage } = require("../lib/providers/aws");
 
-//testee and test data
-const { getImage, awsCreate, awsDestroy, awsListInstances } = require("../lib/providers/aws");
+//stub
+const output = sinon.stub();
+
+//helper function
+const ARsshClient = require("arssh2-client");
 
 const addressSchema = {
   properties: {
@@ -21,6 +25,7 @@ const addressSchema = {
   }
 };
 
+//privateKey is required only if order does not have publicKey
 const clusterSchema = {
   properties: {
     childNodes: {
@@ -49,15 +54,14 @@ const clusterSchema = {
     },
     user: { type: "string" },
     privateKey: { type: "string" },
-    id: { type: "string" }
+    clusterID: { type: "string" }
   },
-  required: ["childNodes", "headNodes", "loginUser", "privateKey", "id"],
+  required: ["childNodes", "headNodes", "user", "clusterID"],
   additionalProperties: false
 };
 
-
-describe("test for aws functions", function() {
-  this.timeout(0);//eslint-disable-line no-invalid-this
+describe("test for aws dedicated functions", ()=>{
+  //TODO run only if aws credentials are found!
   describe("#getImage", ()=>{
     const stub = sinon.stub();
     [
@@ -96,17 +100,32 @@ describe("test for aws functions", function() {
       expect(getImage("centos7")).to.be.rejected;
     });
   });
-  describe.only("#create-list-destroy", async()=>{
-    it("should create, list, and destroy", async()=>{
-      const order = {
-        provider: "aws",
-        numNodes: 3,
-        InstanceType: "t2.micro",
-        os: "ubuntu16",
-        batch: "pbspro",
-        region: "ap-northeast-1"
-      };
-      const cluster = await awsCreate(order);
+  describe("just create instances", async function() {
+    this.timeout(900000);//eslint-disable-line no-invalid-this
+    let cluster;
+    afterEach(async()=>{
+      await destroy(cluster);
+      const instancesAfter = await list(cluster);
+      expect(instancesAfter.length).to.equal(0);
+    });
+    //TODO check with several order pattern
+    const order = {
+      provider: "aws",
+      numNodes: 3,
+      InstanceType: "t2.micro",
+      os: "ubuntu16",
+      batch: "PBSpro",
+      region: "ap-northeast-1"
+    };
+    //order.info = console.log;
+    //order.debug = console.log;
+
+    if (!order.publicKey) {
+      clusterSchema.required.push("privateKey");
+    }
+
+    it("should create cluster", async()=>{
+      cluster = await create(order);
       expect(cluster).to.be.jsonSchema(clusterSchema);
       expect(cluster.childNodes).to.have.lengthOf(order.numNodes - 1);
       const arssh = new ARsshClient({
@@ -116,28 +135,46 @@ describe("test for aws functions", function() {
       });
 
       //check ssh login setting
-      const stdout = [];
-      await arssh.exec("hostname", {}, stdout, stdout);
+      output.reset();
+      await arssh.exec("hostname", {}, output, output);
+      expect(output).to.be.calledOnce;
+      const headDnsName = cluster.headNodes[0].privateNetwork.hostname;
+      const firstPiriod = headDnsName.indexOf(".");
+      const headnode = headDnsName.slice(0, firstPiriod);
+      expect(output).to.be.always.calledWithMatch(headnode);
+
+      output.reset();
 
       for (const child of cluster.childNodes) {
-        await arssh.exec(`ssh ${child.privateNetwork.IP} hostname`, stdout, stdout);
+        await arssh.exec(`ssh ${child.privateNetwork.IP} hostname`, {}, output, output);
       }
+      expect(output).to.be.callCount(cluster.childNodes.length);
+
+
+      //wait for finish cloud-init
+      await arssh.exec("cloud-init status -w");
+      //console.log("cloud-init done!");
 
       //check NFS
-      await arssh.exec("echo #!/bin/bash\n\nhostname\n > run.sh && chmod +x run.sh");
+      output.reset();
+      await arssh.exec("echo sleep2&&hostname > run.sh && chmod +x run.sh");
 
       for (const child of cluster.childNodes) {
-        await arssh.exec(`ssh ${child.privateNetwork.IP} cat run.sh`, stdout, stdout);
+        await arssh.exec(`ssh ${child.privateNetwork.IP} ls run.sh`, {}, output, output);
       }
-      console.log("DEBUG 3", stdout);
+      expect(output).to.be.callCount(cluster.childNodes.length);
+      expect(output).to.be.always.calledWithMatch("run.sh");
 
       //check batch server
-      await arssh.exec("for i in `seq 5`; do qsub run.sh; done", stdout, stdout);
-      console.log("DEBUG 4", stdout);
-
-      //await awsDestroy(cluster.id);
-      const instancesAfter = await awsListInstances(cluster.id);
-      expect(instancesAfter.length).to.equal(0);
+      output.reset();
+      await arssh.exec("for i in `seq 5`; do qsub run.sh; done", {}, output, output);
+      expect(output).to.be.callCount(5);
+      expect(output).to.be.always.calledWithMatch(headnode);
+      //TODO check run.sh.[oe]0 〜 run.sh.[oe]4
+      output.reset();
+      await arssh.exec("cat run.sh.o*", {}, console.log, console.log);
+      await arssh.exec("cat run.sh.e*", {}, console.log, console.log);
+      await arssh.exec("ls -l run.sh.*", {}, console.log, console.log);
     });
   });
 });

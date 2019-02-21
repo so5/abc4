@@ -43,7 +43,7 @@ async function main() {
       console.log("invalid order");
       return;
     }
-    order.debug = console.log.bind(console);
+    order.info = console.log.bind(console);
     const rt = await lib.create(order);
 
     console.log("create cluster done:");
@@ -73,12 +73,12 @@ async function main() {
   } else if (options.destroy) {
     await lib.destroy({
       clusterID: options["<id_string>"],
-      debug: console.log.bind(console)
+      info: console.log.bind(console)
     });
   } else if (options.list) {
     const opt = {
       clusterID: options["<id_string>"] || null,
-      debug: console.log.bind(console)
+      info: console.log.bind(console)
     };
     await lib.list(opt);
   }
