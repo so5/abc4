@@ -1,5 +1,5 @@
 # ABC4 (ABCCCC)
-ABC4 means ABstruCt Cloud hpC Cluster Controller.
+ABC4 means ABstruct Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
 
 
