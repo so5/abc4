@@ -67,9 +67,9 @@ describe("test for aws dedicated functions", ()=>{
     [
       { os: "centos7", ImageID: "ami-045f38c93733dd48d" },
       { os: "centos6", ImageID: "ami-02eb8e0986956e8d6" },
-      { os: "ubuntu18", ImageID: "ami-0238fc6af6bba5241" },
-      { os: "ubuntu16", ImageID: "ami-073bca96b05146436" },
-      { os: "rhel7", ImageID: "ami-08419d23bf91152e4" },
+      { os: "ubuntu18", ImageID: "ami-0eb48a19a8d81e20b" },
+      { os: "ubuntu16", ImageID: "ami-0618e1b3455240a2b" },
+      { os: "rhel7", ImageID: "ami-00b95502a4d51a07e" },
       { os: "rhel6", ImageID: "ami-00436f752b63a5555" }
     ].forEach((e)=>{
       it(`should return latest lmage ID of ${e.os}`, async()=>{
@@ -109,13 +109,21 @@ describe("test for aws dedicated functions", ()=>{
       expect(instancesAfter.length).to.equal(0);
     });
     //TODO check with several order pattern
+    const userPlaybook = `\
+- hosts: all
+  tasks:
+    - command: "hostname"
+      register: tmp
+    - debug: var=tmp
+`;
     const order = {
       provider: "aws",
       numNodes: 3,
       InstanceType: "t2.micro",
       os: "ubuntu16",
       batch: "PBSpro",
-      region: "ap-northeast-1"
+      region: "ap-northeast-1",
+      playbook: userPlaybook
     };
     //order.info = console.log;
     //order.debug = console.log;
@@ -157,7 +165,7 @@ describe("test for aws dedicated functions", ()=>{
 
       //check NFS
       output.reset();
-      await arssh.exec("echo sleep2&&hostname > run.sh && chmod +x run.sh");
+      await arssh.exec("echo sleep 2 && hostname > run.sh && chmod +x run.sh");
 
       for (const child of cluster.childNodes) {
         await arssh.exec(`ssh ${child.privateNetwork.IP} ls run.sh`, {}, output, output);

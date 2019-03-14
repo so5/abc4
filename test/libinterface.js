@@ -6,8 +6,11 @@ const sinon = require("sinon");
 chai.use(require("sinon-chai"));
 
 //stubs
+const uuidv1 = require("uuid/v1");
 const stubs = {
-  create: sinon.stub(),
+  create: async()=>{
+    return { clusterID: `abc4_aws_foo_bar_${uuidv1()}` };
+  },
   destroy: sinon.stub(),
   list: sinon.stub(),
   increase: sinon.stub(),
@@ -20,49 +23,60 @@ const rewire = require("rewire");
 const index = rewire("../lib/index.js");
 //eslint-disable-next no-underscore-dangle
 index.__set__("getMethod", (provider, cmd)=>{
-  return stubs(cmd);
+  return stubs[cmd];
 });
 
 //helper functions
 const { reID } = require("../lib/validation/index.js");
 
 //testee and test data
-const { create, destroy, increase, decrease, suspend, resume } = require("../lib/index.js");
+const create = index.__get__("create");
+const destroy = index.__get__("destroy ");
+const increase = index.__get__("increase");
+const decrease = index.__get__("decrease");
+const suspend = index.__get__("suspend ");
+const resume = index.__get__("resume ");
 const testOrder = {
-  provider: "test",
-  n: 2
+  provider: "aws",
+  region: "hoge"
 };
 
 describe("test for library interface routines", ()=>{
   describe("#create", ()=>{
-    it("should return uuid if called with right order", async()=>{
-      expect(await create(testOrder)).to.match(reID);
+    it("should return ID if called with right order", async()=>{
+      const { clusterID } = await create(testOrder);
+      expect(clusterID).to.match(reID);
     });
-    it("should return null if called with illegal argument", async()=>{
-      expect(await create("hoge")).to.be.null;
-      expect(await create(null)).to.be.null;
-      expect(await create(1)).to.be.null;
-      expect(await create({})).to.be.null;
-      expect(await create()).to.be.null;
+    [
+      "hoge",
+      null,
+      1,
+      {},
+      undefined
+    ].forEach((arg)=>{
+      it("should be rejected if called with illegal argument", ()=>{
+        return expect(create(arg)).eventually.to.be.rejected;
+      });
     });
   });
   describe("#destroy", ()=>{
-    let testClusterID;
+    let testCluster;
     beforeEach(async()=>{
-      testClusterID = await create(testOrder);
+      testCluster = await create(testOrder);
     });
-    afterEach(async()=>{
-      await destroy(testClusterID.id);
+    it("should return true if called with valid cluster object", async()=>{
+      expect(await destroy(testCluster)).to.be.true;
     });
-    it("should return true if called with valid cluster id", async()=>{
-      expect(await destroy(testClusterID.id)).to.be.true;
-    });
-    it("should return null if called with invalid cluster id", async()=>{
-      expect(await destroy("hoge")).to.be.null;
-      expect(await destroy(null)).to.be.null;
-      expect(await destroy(1)).to.be.null;
-      expect(await destroy({})).to.be.null;
-      expect(await destroy()).to.be.null;
+    [
+      "hoge",
+      null,
+      1,
+      {},
+      undefined
+    ].forEach((arg)=>{
+      it("should be rejected if called with invalid cluster object", async()=>{
+        expect(destroy(arg)).eventually.to.be.rejected;
+      });
     });
   });
   describe.skip("#increase", ()=>{
