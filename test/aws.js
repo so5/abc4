@@ -60,21 +60,21 @@ const clusterSchema = {
   additionalProperties: false
 };
 
-describe("test for aws dedicated functions", ()=>{
-  //TODO run only if aws credentials are found!
+describe("test for aws dedicated functions", function (){
+  this.timeout(4000);
   describe("#getImage", ()=>{
     const stub = sinon.stub();
     [
       { os: "centos7", ImageID: "ami-045f38c93733dd48d" },
       { os: "centos6", ImageID: "ami-02eb8e0986956e8d6" },
-      { os: "ubuntu18", ImageID: "ami-0eb48a19a8d81e20b" },
-      { os: "ubuntu16", ImageID: "ami-0618e1b3455240a2b" },
+      { os: "ubuntu18", ImageID: "ami-0947690cc28849416" },
+      { os: "ubuntu16", ImageID: "ami-0b86ca67cb64addcf" },
       { os: "rhel7", ImageID: "ami-00b95502a4d51a07e" },
       { os: "rhel6", ImageID: "ami-00436f752b63a5555" }
     ].forEach((e)=>{
       it(`should return latest lmage ID of ${e.os}`, async()=>{
         const image = await getImage(e.os, "ap-northeast-1");
-        expect(image.ImageId).to.be.equal(e.ImageID);
+        expect(image.ImageId, JSON.stringify(image,null,2)).to.be.equal(e.ImageID);
       });
     });
     [
