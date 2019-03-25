@@ -60,7 +60,7 @@ const clusterSchema = {
   additionalProperties: false
 };
 
-describe("test for aws dedicated functions", function (){
+describe("test for aws dedicated functions", function() {
   this.timeout(4000);
   describe("#getImage", ()=>{
     const stub = sinon.stub();
@@ -74,7 +74,7 @@ describe("test for aws dedicated functions", function (){
     ].forEach((e)=>{
       it(`should return latest lmage ID of ${e.os}`, async()=>{
         const image = await getImage(e.os, "ap-northeast-1");
-        expect(image.ImageId, JSON.stringify(image,null,2)).to.be.equal(e.ImageID);
+        expect(image.ImageId, JSON.stringify(image, null, 2)).to.be.equal(e.ImageID);
       });
     });
     [
