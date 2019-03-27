@@ -8,7 +8,6 @@
   },
   "scripts": {
     "mocha": "mocha --recursive test",
-    "eslint": "eslint --fix",
     "lint": "eslint --fix lib test bin",
     "test": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",

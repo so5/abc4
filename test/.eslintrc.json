@@ -18,7 +18,6 @@
     }
   },
   "plugins": [
-    "chai-expect",
     "chai-friendly"
   ],
   "rules": {
