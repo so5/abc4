@@ -1,6 +1,6 @@
 {
   "name": "abc4",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "ABstruct Cloud hpC Cluster Controller",
   "main": "lib/index.js",
   "bin": {
