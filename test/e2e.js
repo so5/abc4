@@ -60,14 +60,13 @@ const clusterSchema = {
 
 
 describe("create and destroy cluster", async function() {
-  this.timeout(900000);//eslint-disable-line no-invalid-this
+  this.timeout(900000); //eslint-disable-line no-invalid-this
   let cluster;
   afterEach(async()=>{
     await destroy(cluster);
     const instancesAfter = await list(cluster);
     expect(instancesAfter.length).to.equal(0);
   });
-  //TODO check with several order pattern
   const userPlaybook = `\
 - hosts: all
   tasks:
@@ -99,7 +98,7 @@ describe("create and destroy cluster", async function() {
       privateKey: cluster.privateKey
     });
 
-      //check ssh login setting
+    //check ssh login setting
     output.reset();
     await arssh.exec("hostname", {}, output, output);
     expect(output).to.be.calledOnce;
@@ -135,10 +134,19 @@ describe("create and destroy cluster", async function() {
     await arssh.exec("for i in `seq 5`; do qsub run.sh; done", {}, output, output);
     expect(output).to.be.callCount(5);
     expect(output).to.be.always.calledWithMatch(headnode);
-    //TODO check run.sh.[oe]0 〜 run.sh.[oe]4
+    //wait to finish all job
+    await arssh.exec("qstat && sleep 15&&qstat");
+
     output.reset();
-    await arssh.exec("cat run.sh.o*", {}, console.log, console.log);
-    await arssh.exec("cat run.sh.e*", {}, console.log, console.log);
-    await arssh.exec("ls -l run.sh.*", {}, console.log, console.log);
+    await arssh.exec("cat run.sh.o*|sort|uniq", {}, output, output);
+    expect(output).to.be.callCount(1);
+    expect(output).to.be.always.calledWithMatch(headnode);
+
+    for (const child of cluster.childNodes) {
+      const dnsName = child.privateNetwork.hostname;
+      const firstPiriod2 = dnsName.indexOf(".");
+      const childNode = dnsName.slice(0, firstPiriod2);
+      expect(output).to.be.always.calledWithMatch(childNode);
+    }
   });
 });
