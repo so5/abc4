@@ -52,7 +52,7 @@ async function main() {
       console.log(`  ssh ${rt.user}@${e.publicNetwork.IP}`);
     });
     console.log("\nhow to destroy this cluster");
-    console.log(`  npm start destroy ${rt.clusterID}`);
+    console.log(`  npm run destroy ${rt.clusterID}`);
     console.log("\nnetwork configuration:");
     console.log("head node:");
     console.log("  public network:");
