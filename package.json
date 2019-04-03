@@ -10,7 +10,7 @@
     "mocha": "mocha --recursive test",
     "lint": "eslint --fix lib test bin",
     "test": "nyc --reporter=html --reporter=text --reporter=lcov mocha",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "check": "run-s lint test",
     "postversion": "git push origin $(git describe --abbrev=0 --tags)",
     "start": "node bin/main.js",
