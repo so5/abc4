@@ -1,6 +1,8 @@
+[![npm version](https://badge.fury.io/js/abc4.svg)](https://badge.fury.io/js/abc4)
 [![Build Status](https://travis-ci.org/so5/abc4.svg?branch=master)](https://travis-ci.org/so5/abc4)
 [![Coverage Status](https://coveralls.io/repos/github/so5/abc4/badge.svg?branch=master)](https://coveralls.io/github/so5/abc4?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/908f9cdcd1d02ef90f06/maintainability)](https://codeclimate.com/github/so5/abc4/maintainability)
+[![Inline docs](http://inch-ci.org/github/so5/abc4.svg?branch=master)](http://inch-ci.org/github/so5/abc4)
 
 
 # ABC4 (ABCCCC)
