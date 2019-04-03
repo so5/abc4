@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/so5/abc4.svg?branch=master)](https://travis-ci.org/so5/abc4)
+
 # ABC4 (ABCCCC)
 ABC4 means ABstruct Cloud hpC Cluster Controller.
 you can create, suspend, resume, change number of nodes, and destroy HPC cluster on any cloud providers.
