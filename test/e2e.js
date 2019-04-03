@@ -95,7 +95,8 @@ describe("create and destroy cluster", async function() {
     const arssh = new ARsshClient({
       host: cluster.headNodes[0].publicNetwork.IP,
       username: cluster.user,
-      privateKey: cluster.privateKey
+      privateKey: cluster.privateKey,
+      maxConnection: 1
     });
 
     //check ssh login setting
