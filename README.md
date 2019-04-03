@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/so5/abc4.svg?branch=master)](https://travis-ci.org/so5/abc4)
+[![Coverage Status](https://coveralls.io/repos/github/so5/abc4/badge.svg?branch=master)](https://coveralls.io/github/so5/abc4?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/908f9cdcd1d02ef90f06/maintainability)](https://codeclimate.com/github/so5/abc4/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/908f9cdcd1d02ef90f06/test_coverage)](https://codeclimate.com/github/so5/abc4/test_coverage)
+
 
 # ABC4 (ABCCCC)
 ABC4 means ABstruct Cloud hpC Cluster Controller.
