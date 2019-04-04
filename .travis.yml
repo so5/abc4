@@ -6,16 +6,22 @@ node_js:
 os:
 - linux
 - osx
+- windows
 after_success:
 - npm run coverage
-deploy:
-  provider: npm
-  email: sogo@longtail-software.co.jp
-  api_key:
-    secure: QZld1bQNSxVyM/2AWFlV5nha3aYcLksGKUQT8uBpw02floA7GZ/mphpIJ9bhG8auoycmEWz6FCUm7cH01r1Yhu8ktl+1y8LB6CMR125FC4gX1JdP7Lw9mcRKZLk7YuuUI0B/0Dj38iXNsfoSeJ48+b/d6rYVOG3N/HnP9lfRL3rXTkPWBtdMvKRVqem7Ujm97YfrlAHYMBqwPYfeVYEbiH8CGacfCP3fRDFDTuBakABpZN3WiY+/JwIqQxX6NsSXUnoC/DWKyz832KfgZCTqJrig6PvKo+LEPm2jIHu3R3W1DVixteriv8OsLAVpHOxhAaEHQWY89aZ1Fa6nXrY4ocIUe9VXh+XAE2ey+sYFuNWzcPLPPs34QUwlkh3ql3Zfzy+VohnQfLjFoDwFFSBPpPi4/ODkqEWxCxuBJYZcBkDNPY8BBuh0Y/Aaxo2y4nVyDiCvc3z6DzGyoRWBI7FDprsKn3JsHhuSxr90MGRqON78uEBHc43sVYb00sucQUJagCJZK9rvd/hUaS7Di95DdfrfxeS2qttMr6aFqI7MXp7EjrG4oMXJ+BCFLjRI0bzrKMz53PNcZJhmU3xCnQuoE6gE0xHzF6xinuqyekGJeHdcQCEzOIBFwpptexqYm9n6rbJKLCmHQy7rwh2v9wCbAIdT/QrhdqjLi2W9BBcSpQY=
-  on:
-    tags: true
-  skip_cleanup: true
+jobs:
+  include:
+  - stage: npm publish
+    node_js: lts/*
+    script: skip
+    deploy:
+      provider: npm
+      email: sogo@longtail-software.co.jp
+      api_key:
+        secure: QZld1bQNSxVyM/2AWFlV5nha3aYcLksGKUQT8uBpw02floA7GZ/mphpIJ9bhG8auoycmEWz6FCUm7cH01r1Yhu8ktl+1y8LB6CMR125FC4gX1JdP7Lw9mcRKZLk7YuuUI0B/0Dj38iXNsfoSeJ48+b/d6rYVOG3N/HnP9lfRL3rXTkPWBtdMvKRVqem7Ujm97YfrlAHYMBqwPYfeVYEbiH8CGacfCP3fRDFDTuBakABpZN3WiY+/JwIqQxX6NsSXUnoC/DWKyz832KfgZCTqJrig6PvKo+LEPm2jIHu3R3W1DVixteriv8OsLAVpHOxhAaEHQWY89aZ1Fa6nXrY4ocIUe9VXh+XAE2ey+sYFuNWzcPLPPs34QUwlkh3ql3Zfzy+VohnQfLjFoDwFFSBPpPi4/ODkqEWxCxuBJYZcBkDNPY8BBuh0Y/Aaxo2y4nVyDiCvc3z6DzGyoRWBI7FDprsKn3JsHhuSxr90MGRqON78uEBHc43sVYb00sucQUJagCJZK9rvd/hUaS7Di95DdfrfxeS2qttMr6aFqI7MXp7EjrG4oMXJ+BCFLjRI0bzrKMz53PNcZJhmU3xCnQuoE6gE0xHzF6xinuqyekGJeHdcQCEzOIBFwpptexqYm9n6rbJKLCmHQy7rwh2v9wCbAIdT/QrhdqjLi2W9BBcSpQY=
+      on:
+        tags: true
+      skip_cleanup: true
 notifications:
   mail: false
   slack:

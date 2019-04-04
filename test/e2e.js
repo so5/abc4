@@ -77,7 +77,7 @@ describe("create and destroy cluster", async function() {
   const order = {
     provider: "aws",
     numNodes: 3,
-    InstanceType: "t2.micro",
+    InstanceType: "t2.nano",
     os: "ubuntu16",
     batch: "PBSpro",
     region: "ap-northeast-1",
@@ -109,8 +109,7 @@ describe("create and destroy cluster", async function() {
     expect(output).to.be.always.calledWithMatch(headnode);
 
     //wait for finish cloud-init
-    await arssh.exec("cloud-init status -w");
-    //console.log("cloud-init done!");
+    await arssh.watch("cloud-init status", /done|error|disabled/, 60000, 20, {}, console.log.bind(console), console.log.bind(console));
 
     //check ssh login from head node to child nodes
     for (const child of cluster.childNodes) {

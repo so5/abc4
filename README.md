@@ -56,16 +56,16 @@ cluster.id is returned string from create()
 
 ## supported providers
 - aws
-- azure (planned)
-- GCE (planned)
+- azure (planning)
+- GCE (planning)
 
 ## supported OS
 - CentOS 7
-- CentOS 6 (planned)
-- Ubuntu 18.04 LTS - Bionic (planned)
+- CentOS 6 (planning)
+- Ubuntu 18.04 LTS - Bionic (planning)
 - Ubuntu 16.04 LTS - Xenial
-- RedHat Enterprise Linux 7 (planned)
-- RedHat Enterprise Linux 6 (planned)
+- RedHat Enterprise Linux 7 (planning)
+- RedHat Enterprise Linux 6 (planning)
 
 
 ## API
