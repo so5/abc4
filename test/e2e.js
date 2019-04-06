@@ -109,7 +109,7 @@ describe("create and destroy cluster", async function() {
     expect(output).to.be.always.calledWithMatch(headnode);
 
     //wait for finish cloud-init
-    await arssh.watch("cloud-init status", /done|error|disabled/, 60000, 20, {}, console.log.bind(console), console.log.bind(console));
+    await arssh.watch("tail /var/log/cloud-init-output.log >&2 && cloud-init status", { out: /done|error|disabled/ }, 60000, 20, {}, console.log, console.log);
 
     //check ssh login from head node to child nodes
     for (const child of cluster.childNodes) {
