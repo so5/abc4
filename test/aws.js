@@ -49,7 +49,7 @@ describe("test for aws internal functions", function() {
       { os: "centos7", ImageID: "ami-045f38c93733dd48d" },
       { os: "centos6", ImageID: "ami-02eb8e0986956e8d6" },
       { os: "ubuntu18", ImageID: "ami-003371bfa26192744" },
-      { os: "ubuntu16", ImageID: "ami-0b86ca67cb64addcf" },
+      { os: "ubuntu16", ImageID: "ami-097beac0bacfefe65" },
       { os: "rhel7", ImageID: "ami-00b95502a4d51a07e" },
       { os: "rhel6", ImageID: "ami-00436f752b63a5555" }
     ].forEach((e)=>{
