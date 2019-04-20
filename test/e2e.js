@@ -88,7 +88,7 @@ describe("create and destroy cluster", async function() {
     clusterSchema.required.push("privateKey");
   }
 
-  it("should create cluster", async()=>{
+  it.only("should create cluster", async()=>{
     cluster = await create(order);
     expect(cluster).to.be.jsonSchema(clusterSchema);
     expect(cluster.childNodes).to.have.lengthOf(order.numNodes - 1);
@@ -109,7 +109,13 @@ describe("create and destroy cluster", async function() {
     expect(output).to.be.always.calledWithMatch(headnode);
 
     //wait for finish cloud-init
-    await arssh.watch("tail /var/log/cloud-init-output.log >&2 && cloud-init status", { out: /done|error|disabled/ }, 60000, 20, {}, console.log, console.log);
+    await arssh.watch("tail /var/log/cloud-init-output.log >&2 && cloud-init status", { out: /done|error|disabled/ }, 60000, 20, {});
+
+    await arssh.exec("sudo cat /var/log/cloud-init-output.log", {}, console.log, console.log); //for debug
+    await arssh.exec("sudo head /etc/ssh/sshd_config", {}, console.log, console.log); //for debug
+    await arssh.exec("sudo cat /etc/ssh/shosts.equiv", {}, console.log, console.log); //for debug
+    await arssh.exec("pbsnodes -a", {}, console.log, console.log); //for debug
+    //await arssh.exec("sudo cat /var/lib/cloud/instance/scripts/runcmd", {}, console.log, console.log); //for debug
 
     //check ssh login from head node to child nodes
     for (const child of cluster.childNodes) {
@@ -117,6 +123,8 @@ describe("create and destroy cluster", async function() {
       await arssh.exec(`ssh ${child.privateNetwork.IP} hostname`, {}, output, output);
       const hostname = child.privateNetwork.hostname.split(".")[0];
       expect(output).to.be.calledWithMatch(hostname);
+      await arssh.exec(`ssh ${child.privateNetwork.IP} cat /etc/pbs.conf`, {}, console.log, console.log); //for debug
+      await arssh.exec(`sudo ssh ${child.privateNetwork.IP} head /etc/ssh/sshd_config`, {}, console.log, console.log); //for debug
     }
 
     //check NFS
@@ -140,6 +148,7 @@ describe("create and destroy cluster", async function() {
     output.reset();
     await arssh.exec("cat run.sh.o*|sort|uniq", {}, output, output);
     expect(output).to.be.callCount(1);
+    console.log(output.getCall(0).args);
     expect(output).to.be.always.calledWithMatch(headnode);
 
     for (const child of cluster.childNodes) {
