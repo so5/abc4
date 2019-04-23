@@ -60,7 +60,7 @@ const clusterSchema = {
 
 
 describe("create and destroy cluster", async function() {
-  this.timeout(900000); //eslint-disable-line no-invalid-this
+  this.timeout(3600000); //eslint-disable-line no-invalid-this
   let cluster;
   afterEach(async()=>{
     await destroy(cluster);
@@ -109,12 +109,12 @@ describe("create and destroy cluster", async function() {
     expect(output).to.be.always.calledWithMatch(headnode);
 
     //wait for finish cloud-init
-    await arssh.watch("tail /var/log/cloud-init-output.log >&2 && cloud-init status", { out: /done|error|disabled/ }, 60000, 20, {});
-
-    await arssh.exec("sudo cat /var/log/cloud-init-output.log", {}, console.log, console.log); //for debug
-    await arssh.exec("sudo head /etc/ssh/sshd_config", {}, console.log, console.log); //for debug
-    await arssh.exec("sudo cat /etc/ssh/shosts.equiv", {}, console.log, console.log); //for debug
-    await arssh.exec("pbsnodes -a", {}, console.log, console.log); //for debug
+    await arssh.watch("(tail /var/log/cloud-init-output.log && date) >&2 && cloud-init status", { out: /done|error|disabled/ }, 60000, 60, {}, console.log, console.log);
+    
+    //await arssh.exec("sudo cat /var/log/cloud-init-output.log", {}, console.log, console.log); //for debug
+    //await arssh.exec("sudo head /etc/ssh/sshd_config", {}, console.log, console.log); //for debug
+    //await arssh.exec("sudo cat /etc/ssh/shosts.equiv", {}, console.log, console.log); //for debug
+    //await arssh.exec("pbsnodes -a", {}, console.log, console.log); //for debug
     //await arssh.exec("sudo cat /var/lib/cloud/instance/scripts/runcmd", {}, console.log, console.log); //for debug
 
     //check ssh login from head node to child nodes
@@ -123,8 +123,8 @@ describe("create and destroy cluster", async function() {
       await arssh.exec(`ssh ${child.privateNetwork.IP} hostname`, {}, output, output);
       const hostname = child.privateNetwork.hostname.split(".")[0];
       expect(output).to.be.calledWithMatch(hostname);
-      await arssh.exec(`ssh ${child.privateNetwork.IP} cat /etc/pbs.conf`, {}, console.log, console.log); //for debug
-      await arssh.exec(`sudo ssh ${child.privateNetwork.IP} head /etc/ssh/sshd_config`, {}, console.log, console.log); //for debug
+      //await arssh.exec(`ssh ${child.privateNetwork.IP} cat /etc/pbs.conf`, {}, console.log, console.log); //for debug
+      //await arssh.exec(`sudo ssh ${child.privateNetwork.IP} head /etc/ssh/sshd_config`, {}, console.log, console.log); //for debug
     }
 
     //check NFS
@@ -139,11 +139,12 @@ describe("create and destroy cluster", async function() {
 
     //check batch server
     output.reset();
-    await arssh.exec("for i in `seq 5`; do qsub run.sh; done", {}, output, output);
-    expect(output).to.be.callCount(5);
+    const numJob = cluster.childNodes.length+5;
+    await arssh.exec(`for i in \`seq ${numJob}\`; do qsub run.sh; done`, {}, output, output);
+    expect(output).to.be.callCount(numJob);
     expect(output).to.be.always.calledWithMatch(headnode);
     //wait to finish all job
-    await arssh.exec("qstat && sleep 15&&qstat");
+    await arssh.exec(`qstat && sleep ${numJob * 2} && qstat`);
 
     output.reset();
     await arssh.exec("cat run.sh.o*|sort|uniq", {}, output, output);
