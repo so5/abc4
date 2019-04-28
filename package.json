@@ -19,7 +19,7 @@
     "list": "node bin/main.js list"
   },
   "devDependencies": {
-    "arssh2-client": "^1.6.0",
+    "arssh2-client": "^2.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-json-schema-ajv": "^4.0.0",
