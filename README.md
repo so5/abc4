@@ -67,7 +67,7 @@ cluster.id is returned string from create()
 
 
 ## API
-please see separete doc
+please see separete [doc](./API.md)
 
 
 ## license
