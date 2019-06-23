@@ -8,7 +8,7 @@ chai.use(require("chai-as-promised"));
 chai.use(require("chai-json-schema-ajv"));
 
 //testee
-const { getImage, setupVPC, setupIAMRole, setupKeyPair, cleanUp } = require("../lib/providers/aws/internal.js");
+const { setupVPC, setupIAMRole, setupKeyPair, cleanUp } = require("../lib/providers/aws/internal.js");
 
 //helper
 const uuidv1 = require("uuid/v1");
@@ -41,44 +41,6 @@ describe("test for aws internal functions", function() {
       const [subnetId, sgId] = await setupVPC(ec2, dummyClusterId);
       expect(subnetId).to.match(/subnet-.*/);
       expect(sgId).to.match(/sg-.*/);
-    });
-  });
-  describe("#getImage", ()=>{
-    const stub = sinon.stub();
-    [
-      { os: "centos7", ImageID: "ami-045f38c93733dd48d" },
-      { os: "centos6", ImageID: "ami-02eb8e0986956e8d6" },
-      { os: "ubuntu18", ImageID: "ami-003371bfa26192744" },
-      { os: "ubuntu16", ImageID: "ami-097beac0bacfefe65" },
-      { os: "rhel7", ImageID: "ami-00b95502a4d51a07e" },
-      { os: "rhel6", ImageID: "ami-00436f752b63a5555" }
-    ].forEach((e)=>{
-      it(`should return latest lmage ID of ${e.os}`, async()=>{
-        const image = await getImage(e.os, region, ec2);
-        expect(image.ImageId, JSON.stringify(image, null, 2)).to.be.equal(e.ImageID);
-      });
-    });
-    [
-      "UBUNTU16",
-      "UBUNTU18",
-      "ubuntu 16",
-      "ubuntu bionic",
-      "CentOS7",
-      "centos",
-      "centos5",
-      undefined, //eslint-disable-line no-undefined
-      null,
-      42,
-      {},
-      stub
-    ].forEach((os)=>{
-      it("should be rejected for invaild os keyword", ()=>{
-        expect(getImage(os, "ap-northeast-1")).to.be.rejected;
-        expect(stub).not.to.be.called;
-      });
-    });
-    it("should be rejected if region is not specified", ()=>{
-      expect(getImage("centos7")).to.be.rejected;
     });
   });
 });

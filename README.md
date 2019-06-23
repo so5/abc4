@@ -43,7 +43,7 @@ const order = {provider: "aws", region: "ap-northeast-1"};
 const cluster = await create(order);
 ```
 
-order is the option argument object. you can set any cluster setting (including provider specific one) with this one.
+order is the option argument object. you can set any cluster setting (including provider specific one) with this object.
 cluster is the object which has all information about the cluster you just creat (see also Cluster section)
 
 ### destroy cluster
@@ -61,15 +61,13 @@ cluster.id is returned string from create()
 
 ## supported OS
 - CentOS 7
-- CentOS 6 (planning)
 - Ubuntu 18.04 LTS - Bionic (planning)
 - Ubuntu 16.04 LTS - Xenial
 - RedHat Enterprise Linux 7 (planning)
-- RedHat Enterprise Linux 6 (planning)
 
 
 ## API
-please see separete doc
+please see separete [doc](./API.md)
 
 
 ## license
