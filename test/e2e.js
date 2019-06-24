@@ -77,7 +77,7 @@ describe("create and destroy cluster", async function() {
   const order = {
     provider: "aws",
     numNodes: 3,
-    InstanceType: "t2.micro",
+    InstanceType: process.env.ABC4_TEST_INSTANCE_TYPE || "t2.micro",
     os: "ubuntu16",
     batch: "PBSpro",
     region: "ap-northeast-1",
