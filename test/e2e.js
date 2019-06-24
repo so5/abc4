@@ -62,11 +62,6 @@ const clusterSchema = {
 describe("create and destroy cluster", async function() {
   this.timeout(3600000); //eslint-disable-line no-invalid-this
   let cluster;
-  afterEach(async()=>{
-    await destroy(cluster);
-    const instancesAfter = await list(cluster);
-    expect(instancesAfter.length).to.equal(0);
-  });
   const userPlaybook = `\
 - hosts: all
   tasks:
@@ -88,7 +83,10 @@ describe("create and destroy cluster", async function() {
     clusterSchema.required.push("privateKey");
   }
 
-  it("should create cluster", async()=>{
+  it("should create and destroy cluster", async function() {
+    if (!process.env.ABC4_FULLTEST) {
+      this.skip();
+    }
     cluster = await create(order);
     expect(cluster).to.be.jsonSchema(clusterSchema);
     expect(cluster.childNodes).to.have.lengthOf(order.numNodes - 1);
@@ -160,5 +158,9 @@ describe("create and destroy cluster", async function() {
       const childNode = dnsName.slice(0, firstPiriod2);
       expect(output).to.be.always.calledWithMatch(childNode);
     }
+
+    await destroy(cluster);
+    const instancesAfter = await list(cluster);
+    expect(instancesAfter.length).to.equal(0);
   });
 });
