@@ -84,7 +84,7 @@ describe("create and destroy cluster", async function() {
   }
 
   it("should create and destroy cluster", async function() {
-    if (!process.env.ABC4_FULLTEST) {
+    if (!["YES", "yes"].includes(process.env.ABC4_FULLTEST)) {
       this.skip();
     }
     cluster = await create(order);
