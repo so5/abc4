@@ -52,7 +52,9 @@ const clusterSchema = {
     },
     user: { type: "string" },
     privateKey: { type: "string" },
-    clusterID: { type: "string" }
+    clusterID: { type: "string" },
+    id: { type: "string" },
+    pw: { type: "string" }
   },
   required: ["childNodes", "headNodes", "user", "clusterID"],
   additionalProperties: false
@@ -76,8 +78,16 @@ describe("create and destroy cluster", async function() {
     os: "ubuntu16",
     batch: "PBSpro",
     region: "ap-northeast-1",
+    SubnetId: "subnet-11e39d4a",
+    SecurityGroupIds: ["sg-3f1f6547"],
     playbook: userPlaybook
   };
+  if (process.env.ABC4_TEST_AWS_ACCESS_KEY_ID) {
+    order.id = process.env.ABC4_TEST_AWS_ACCESS_KEY_ID;
+  }
+  if (process.env.ABC4_TEST_AWS_SECRET_ACCESS_KEY) {
+    order.pw = process.env.ABC4_TEST_AWS_SECRET_ACCESS_KEY;
+  }
 
   if (!order.publicKey) {
     clusterSchema.required.push("privateKey");
