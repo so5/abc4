@@ -58,7 +58,7 @@
   },
   "homepage": "https://github.com/so5/abc4#readme",
   "dependencies": {
-    "ajv": "^6.6.2",
+    "ajv": "^6.12.1",
     "ajv-keywords": "^3.3.0",
     "aws-sdk": "^2.444.0",
     "coveralls": "^3.0.6",
